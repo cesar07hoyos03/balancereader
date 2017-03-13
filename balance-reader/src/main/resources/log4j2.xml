@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+	<Properties>
+		<Property name="log-path">logs</Property>
+	</Properties>
+	<Appenders>
+		<RollingFile name="RollingFile" fileName="${log-path}/balance-reader.log"
+			filePattern="${log-path}/balance-reader-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout>
+				<pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5000" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Logger name="root" level="debug" additivity="false">
+			<appender-ref ref="RollingFile" level="debug" />
+		</Logger>
+		<Root level="debug" additivity="false">
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>
