@@ -26,8 +26,6 @@ public class RequestManager implements Runnable {
 
 	private View view;
 
-	
-
 	private int accountNumber;
 
 	private static final Logger logger = LogManager.getLogger(View.class.getName());
@@ -41,17 +39,20 @@ public class RequestManager implements Runnable {
 	@Override
 	public void run() {
 		try {
-			boolean testMode = Boolean.valueOf(Launcher.config.getProperty("balancereader.Launcher.config.testmoce", "true"));
+			boolean testMode = Boolean
+					.valueOf(Launcher.config.getProperty("balancereader.Launcher.config.testmoce", "true"));
 
 			XMLBalanceRequest request = new XMLBalanceRequest();
 			TransactionRequest txReq = new TransactionRequest();
 			txReq.setEmployeeID(Launcher.config.getProperty("balancereader.Launcher.config.employee.id", "1"));
 			EmployeeName name = new EmployeeName();
-			name.setFirstName(Launcher.config.getProperty("balancereader.Launcher.config.employee.firstname", "StarPark"));
+			name.setFirstName(
+					Launcher.config.getProperty("balancereader.Launcher.config.employee.firstname", "StarPark"));
 			name.setLastName(Launcher.config.getProperty("balancereader.Launcher.config.employee.lastname", "Test"));
 			txReq.setEmployeeName(name);
 			txReq.setLTDateTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
-			txReq.setMacAddress(Launcher.config.getProperty("balancereader.Launcher.config.macaddress", "STARPARK0000"));
+			txReq.setMacAddress(
+					Launcher.config.getProperty("balancereader.Launcher.config.macaddress", "STARPARK0000"));
 			txReq.setRequestType("BalanceInquiry");
 			txReq.setSessionID(UUID.randomUUID().toString());
 			txReq.setTransactionID(UUID.randomUUID().toString());
@@ -68,7 +69,8 @@ public class RequestManager implements Runnable {
 
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			Socket socket = new Socket(
-					Launcher.config.getProperty("balancereader.Launcher.config.transaction.server", "development.intercardinc.com"),
+					Launcher.config.getProperty("balancereader.Launcher.config.transaction.server",
+							"development.intercardinc.com"),
 					Integer.parseInt(
 							Launcher.config.getProperty("balancereader.Launcher.config.transaction.port", "3044")));
 
@@ -87,6 +89,12 @@ public class RequestManager implements Runnable {
 
 			view.getLblPointsValue().setText(Integer.toString(response.getAccountBalance().getPointBalance()));
 			view.getLblCashValue().setText(Float.toString(response.getAccountBalance().getCashBalance()));
+			view.getLblCashBonusValue().setText(Float.toString(response.getAccountBalance().getCashBonusBalance()));
+			view.getLblTokenBonusValue().setText(Integer.toString(response.getAccountBalance().getTokenBonusBalance()));
+			view.getLblTokenValue().setText(Integer.toString(response.getAccountBalance().getTokenBalance()));
+
+			Thread cleanManager = new Thread(new CleanManager(view));
+			cleanManager.start();
 
 		} catch (Exception ex) {
 			logger.error("Error", ex);

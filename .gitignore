@@ -4,3 +4,4 @@ balance-reader/.settings/
 .metadata/
 balance-reader/logs/balance-reader.log
 balance-reader/dependency-reduced-pom.xml
+.recommenders/

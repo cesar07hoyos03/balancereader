@@ -37,6 +37,9 @@ public class View {
 	private JLabel lblAccountId = new JLabel("");
 	private JLabel lblPointsValue = new JLabel("");
 	private JLabel lblCashValue = new JLabel("");
+	private JLabel lblCashBonusValue = new JLabel("");
+	private JLabel lblTokenValue = new JLabel("");
+	private JLabel lblTokenBonusValue = new JLabel("");
 
 	private static final Logger logger = LogManager.getLogger(View.class.getName());
 	private static ClassLoader classLoader = View.class.getClassLoader();
@@ -165,27 +168,27 @@ public class View {
 		panel2.add(pointsPanel);
 		pointsPanel.setLayout(new GridLayout(2, 1, 0, 0));
 
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
-		panel.setBackground(new Color(255, 255, 240));
-		pointsPanel.add(panel);
-		panel.setLayout(new GridLayout(0, 1, 0, 0));
+		JPanel pointsLabelPanel = new JPanel();
+		pointsLabelPanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		pointsLabelPanel.setBackground(new Color(255, 255, 240));
+		pointsPanel.add(pointsLabelPanel);
+		pointsLabelPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
 		JLabel lblPoints = new JLabel(Launcher.config.getProperty("balancereader.config.pointbalance.text"));
-		panel.add(lblPoints);
+		pointsLabelPanel.add(lblPoints);
 		lblPoints.setForeground(new Color(128, 0, 0));
 		lblPoints.setFont(new Font("Tahoma", Font.PLAIN, 40));
 		lblPoints.setHorizontalAlignment(SwingConstants.CENTER);
 
-		JPanel panel_5 = new JPanel();
-		panel_5.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
-		panel_5.setBackground(new Color(255, 255, 240));
-		pointsPanel.add(panel_5);
-		panel_5.setLayout(new GridLayout(0, 1, 0, 0));
+		JPanel pointsValuePanel = new JPanel();
+		pointsValuePanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		pointsValuePanel.setBackground(new Color(255, 255, 240));
+		pointsPanel.add(pointsValuePanel);
+		pointsValuePanel.setLayout(new GridLayout(0, 1, 0, 0));
 		lblPointsValue.setBackground(new Color(255, 255, 240));
-		panel_5.add(lblPointsValue);
+		pointsValuePanel.add(lblPointsValue);
 
-		lblPointsValue.setForeground(new Color(128, 0, 0));
+		lblPointsValue.setForeground(new Color(0, 128, 0));
 		lblPointsValue.setFont(new Font("Tahoma", Font.PLAIN, 40));
 		lblPointsValue.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -196,48 +199,126 @@ public class View {
 		panel2.add(cashPanel);
 		cashPanel.setLayout(new GridLayout(2, 0, 0, 0));
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
-		panel_1.setBackground(new Color(255, 255, 240));
-		cashPanel.add(panel_1);
-		panel_1.setLayout(new GridLayout(1, 0, 0, 0));
+		JPanel cashLabelPanel = new JPanel();
+		cashLabelPanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		cashLabelPanel.setBackground(new Color(255, 255, 240));
+		cashPanel.add(cashLabelPanel);
+		cashLabelPanel.setLayout(new GridLayout(1, 0, 0, 0));
 
 		JLabel lblCash = new JLabel(Launcher.config.getProperty("balancereader.config.cashBalance.text"));
 		lblCash.setForeground(new Color(128, 0, 0));
 		lblCash.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCash.setFont(new Font("Tahoma", Font.PLAIN, 40));
 		lblCash.setBackground(new Color(255, 255, 240));
-		panel_1.add(lblCash);
+		cashLabelPanel.add(lblCash);
 
-		JPanel panel_6 = new JPanel();
-		panel_6.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
-		panel_6.setBackground(new Color(255, 255, 240));
-		cashPanel.add(panel_6);
-		panel_6.setLayout(new GridLayout(1, 0, 0, 0));
-		lblCashValue.setForeground(new Color(128, 0, 0));
+		JPanel cashValuePanel = new JPanel();
+		cashValuePanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		cashValuePanel.setBackground(new Color(255, 255, 240));
+		cashPanel.add(cashValuePanel);
+		cashValuePanel.setLayout(new GridLayout(1, 0, 0, 0));
+		lblCashValue.setForeground(new Color(0, 128, 0));
 		lblCashValue.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCashValue.setFont(new Font("Tahoma", Font.PLAIN, 40));
 
 		lblCashValue.setBackground(new Color(255, 255, 240));
-		panel_6.add(lblCashValue);
+		cashValuePanel.add(lblCashValue);
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(255, 255, 240));
-		panel_2.setForeground(new Color(0, 0, 0));
-		panel_2.setBorder(new LineBorder(new Color(255, 255, 255), 2));
-		panel2.add(panel_2);
+		JPanel cashBonusPanel = new JPanel();
+		cashBonusPanel.setBackground(new Color(255, 255, 240));
+		cashBonusPanel.setForeground(new Color(0, 0, 0));
+		cashBonusPanel.setBorder(new LineBorder(new Color(255, 255, 255), 2));
+		panel2.add(cashBonusPanel);
+		cashBonusPanel.setLayout(new GridLayout(2, 0, 0, 0));
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(new Color(255, 255, 240));
-		panel_3.setForeground(new Color(0, 0, 0));
-		panel_3.setBorder(new LineBorder(new Color(255, 255, 255), 2));
-		panel2.add(panel_3);
+		JPanel cashBonusLabelPanel = new JPanel();
+		cashBonusLabelPanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		cashBonusLabelPanel.setBackground(new Color(255, 255, 240));
+		cashBonusPanel.add(cashBonusLabelPanel);
+		cashBonusLabelPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JPanel panel_4 = new JPanel();
-		panel_4.setBackground(new Color(255, 255, 240));
-		panel_4.setBorder(new LineBorder(new Color(255, 255, 255), 2));
-		panel_4.setForeground(new Color(0, 0, 0));
-		panel2.add(panel_4);
+		JLabel lblCashBonus = new JLabel(Launcher.config.getProperty("balancereader.config.cashBonusBalance.text"));
+		lblCashBonus.setForeground(new Color(128, 0, 0));
+		lblCashBonus.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCashBonus.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		lblCashBonus.setBackground(new Color(255, 255, 240));
+		cashBonusLabelPanel.add(lblCashBonus);
+
+		JPanel cashBonusValuePanel = new JPanel();
+		cashBonusValuePanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		cashBonusValuePanel.setBackground(new Color(255, 255, 240));
+		cashBonusPanel.add(cashBonusValuePanel);
+		cashBonusValuePanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		lblCashBonusValue.setForeground(new Color(0, 128, 0));
+		lblCashBonusValue.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCashBonusValue.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		lblCashBonusValue.setBackground(new Color(255, 255, 240));
+		cashBonusValuePanel.add(lblCashBonusValue);
+
+		JPanel tokenPanel = new JPanel();
+		tokenPanel.setBackground(new Color(255, 255, 240));
+		tokenPanel.setForeground(new Color(0, 0, 0));
+		tokenPanel.setBorder(new LineBorder(new Color(255, 255, 255), 2));
+		panel2.add(tokenPanel);
+		tokenPanel.setLayout(new GridLayout(2, 0, 0, 0));
+
+		JPanel tokenLabelPanel = new JPanel();
+		tokenLabelPanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		tokenLabelPanel.setBackground(new Color(255, 255, 240));
+		tokenPanel.add(tokenLabelPanel);
+		tokenLabelPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		JLabel lblToken = new JLabel(Launcher.config.getProperty("balancereader.config.tokenBalance.text"));
+		lblToken.setForeground(new Color(128, 0, 0));
+		lblToken.setHorizontalAlignment(SwingConstants.CENTER);
+		lblToken.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		lblToken.setBackground(new Color(255, 255, 240));
+		tokenLabelPanel.add(lblToken);
+
+		JPanel tokenValuePanel = new JPanel();
+		tokenValuePanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		tokenValuePanel.setBackground(new Color(255, 255, 240));
+		tokenPanel.add(tokenValuePanel);
+		tokenValuePanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		lblTokenValue.setForeground(new Color(0, 128, 0));
+		lblTokenValue.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTokenValue.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		lblTokenValue.setBackground(new Color(255, 255, 240));
+		tokenValuePanel.add(lblTokenValue);
+
+		JPanel tokenBonusPanel = new JPanel();
+		tokenBonusPanel.setBackground(new Color(255, 255, 240));
+		tokenBonusPanel.setBorder(new LineBorder(new Color(255, 255, 255), 2));
+		tokenBonusPanel.setForeground(new Color(0, 0, 0));
+		panel2.add(tokenBonusPanel);
+		tokenBonusPanel.setLayout(new GridLayout(2, 0, 0, 0));
+
+		JPanel tokenBonusLabelPanel = new JPanel();
+		tokenBonusLabelPanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		tokenBonusLabelPanel.setBackground(new Color(255, 255, 240));
+		tokenBonusPanel.add(tokenBonusLabelPanel);
+		tokenBonusLabelPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		JLabel lblTokenBonus = new JLabel(Launcher.config.getProperty("balancereader.config.tokenBonusBalance.text"));
+		lblTokenBonus.setForeground(new Color(128, 0, 0));
+		lblTokenBonus.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTokenBonus.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		lblTokenBonus.setBackground(new Color(255, 255, 240));
+		tokenBonusLabelPanel.add(lblTokenBonus);
+
+		JPanel tokenBonusValuePanel = new JPanel();
+		tokenBonusValuePanel.setBorder(new LineBorder(new Color(128, 0, 0), 2, true));
+		tokenBonusValuePanel.setBackground(new Color(255, 255, 240));
+		tokenBonusPanel.add(tokenBonusValuePanel);
+		tokenBonusValuePanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		lblTokenBonusValue.setForeground(new Color(0, 128, 0));
+		lblTokenBonusValue.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTokenBonusValue.setFont(new Font("Tahoma", Font.PLAIN, 40));
+		lblTokenBonusValue.setBackground(new Color(255, 255, 240));
+		tokenBonusValuePanel.add(lblTokenBonusValue);
 	}
 
 	private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {
@@ -265,14 +346,38 @@ public class View {
 	}
 
 	/**
-	 * @return
+	 * @return lblPointsValue
 	 */
 	public JLabel getLblPointsValue() {
 		return lblPointsValue;
 	}
 
+	/**
+	 * @return lblCashValue
+	 */
 	public JLabel getLblCashValue() {
 		return lblCashValue;
+	}
+	
+	/**
+	 * @return lblTokenBonusValue
+	 */
+	public JLabel getLblTokenBonusValue() {
+		return lblTokenBonusValue;
+	}
+	
+	/**
+	 * @return lblTokenValue
+	 */
+	public JLabel getLblTokenValue() {
+		return lblTokenValue;
+	}
+	
+	/**
+	 * @return lblCashBonusValue
+	 */
+	public JLabel getLblCashBonusValue() {
+		return lblCashBonusValue;
 	}
 
 }
