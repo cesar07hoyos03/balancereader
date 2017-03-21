@@ -1,6 +1,8 @@
 package co.com.starpark.balancereader.main;
 
 import java.awt.EventQueue;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
@@ -42,6 +44,10 @@ public class Launcher {
 		logger.info(title);
 		logger.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
+		StringWriter writer = new StringWriter();
+		config.list(new PrintWriter(writer));
+		logger.info("Loading Properties: \n{}", writer.getBuffer().toString());
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -52,7 +58,6 @@ public class Launcher {
 							break;
 						}
 					}
-					// View window = new View();
 					BalanceReader window = new BalanceReader();
 					window.setVisible(true);
 				} catch (Exception e) {

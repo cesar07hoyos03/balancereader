@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,10 +38,10 @@ public class BalanceReader extends JFrame {
 	private static ClassLoader classLoader = BalanceReader.class.getClassLoader();
 
 	private JTextField txtAccountId;
-
 	private JLabel lblPoints = new JLabel();
 	private JLabel lblCash = new JLabel();
 	private JLabel lblBonus = new JLabel();
+	private ErrorDialog dialog = new ErrorDialog();
 
 	/**
 	 * Create the frame.
@@ -48,10 +49,14 @@ public class BalanceReader extends JFrame {
 	 * @throws IOException
 	 */
 	public BalanceReader() throws IOException {
+
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(false);
+		dialog.setLocationRelativeTo(this);
+
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// setLocationRelativeTo(null);
 		setBounds(0, -5, 1024, 768);
 
 		JPanel mainPanel = new JPanel();
@@ -150,13 +155,13 @@ public class BalanceReader extends JFrame {
 				st.nextToken();
 				int id = Integer.parseInt(st.nextToken());
 				logger.info("Account readed {}", id);
+				txtAccountId.setEnabled(false);
 
 				Thread requestManager = new Thread(new RequestManager(this, id));
 				requestManager.start();
 
 			}
 		} catch (Exception e) {
-			// Display Error Message
 			logger.error("", e);
 		}
 	}
@@ -171,5 +176,13 @@ public class BalanceReader extends JFrame {
 
 	public JLabel getLblCash() {
 		return lblCash;
+	}
+
+	public synchronized ErrorDialog getDialog() {
+		return dialog;
+	}
+
+	public JTextField getTxtAccountId() {
+		return txtAccountId;
 	}
 }

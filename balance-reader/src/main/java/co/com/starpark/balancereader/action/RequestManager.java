@@ -1,6 +1,8 @@
 package co.com.starpark.balancereader.action;
 
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.GregorianCalendar;
 import java.util.UUID;
@@ -28,12 +30,14 @@ public class RequestManager implements Runnable {
 
 	private int accountNumber;
 
+	private Thread cleanManager;
+
 	private static final Logger logger = LogManager.getLogger(RequestManager.class.getName());
 
 	public RequestManager(BalanceReader view, int accountNumber) {
 		this.view = view;
 		this.accountNumber = accountNumber;
-
+		cleanManager = new Thread(new CleanManager(view));
 	}
 
 	@Override
@@ -58,40 +62,55 @@ public class RequestManager implements Runnable {
 			txReq.setUTCDateTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
 			request.setTransactionRequest(txReq);
 
-			BalanceInquiry balanceInquiry = new BalanceInquiry();
-			balanceInquiry.setAccountNumber(testMode ? 99 : accountNumber);
-			request.setBalanceInquiry(balanceInquiry);
-			logger.info("Request object: {}", ReflectionToStringBuilder.toString(request));
+			String ip = Launcher.config.getProperty("balancereader.config.transaction.server");
+			int port = Integer.parseInt(Launcher.config.getProperty("balancereader.config.transaction.port"));
+			int timeout = 5000;
 
-			JAXBContext jaxbContextRequest = JAXBContext.newInstance(XMLBalanceRequest.class);
-			Marshaller jaxbMarshaller = jaxbContextRequest.createMarshaller();
+			InetSocketAddress address = new InetSocketAddress(ip, port);
+			Socket socket = new Socket();
+			socket.connect(address, timeout);
+			if (socket.isConnected()) {
 
-			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			Socket socket = new Socket(Launcher.config.getProperty("balancereader.config.transaction.server"),
-					Integer.parseInt(Launcher.config.getProperty("balancereader.config.transaction.port")));
+				BalanceInquiry balanceInquiry = new BalanceInquiry();
+				balanceInquiry.setAccountNumber(testMode ? 99 : accountNumber);
+				request.setBalanceInquiry(balanceInquiry);
 
-			OutputStream os = socket.getOutputStream();
-			jaxbMarshaller.marshal(request, os);
-			os.flush();
+				JAXBContext jaxbContextRequest = JAXBContext.newInstance(XMLBalanceRequest.class);
+				Marshaller jaxbMarshaller = jaxbContextRequest.createMarshaller();
+				jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-			JAXBContext jaxbContextResponse = JAXBContext.newInstance(XMLBalanceResponse.class);
+				OutputStream os = socket.getOutputStream();
+				StringWriter sw = new StringWriter();
+				jaxbMarshaller.marshal(request, sw);
+				logger.info("Request object: \n{}", sw.toString());
+				jaxbMarshaller.marshal(request, os);
+				os.flush();
 
-			Unmarshaller jaxbUnmarshaller = jaxbContextResponse.createUnmarshaller();
-			XMLBalanceResponse response = (XMLBalanceResponse) jaxbUnmarshaller.unmarshal(socket.getInputStream());
+				JAXBContext jaxbContextResponse = JAXBContext.newInstance(XMLBalanceResponse.class);
 
-			logger.info("Response object: {}", ReflectionToStringBuilder.toString(response.getAccountBalance()));
-			os.close();
-			socket.close();
+				Unmarshaller jaxbUnmarshaller = jaxbContextResponse.createUnmarshaller();
 
-			view.getLblPoints().setText(Integer.toString(response.getAccountBalance().getPointBalance()));
-			view.getLblCash().setText(Float.toString(response.getAccountBalance().getCashBalance()));
-			view.getLblBonus().setText(Float.toString(response.getAccountBalance().getCashBonusBalance()));
+				XMLBalanceResponse response = (XMLBalanceResponse) jaxbUnmarshaller.unmarshal(socket.getInputStream());
 
-			Thread cleanManager = new Thread(new CleanManager(view));
-			cleanManager.start();
+				logger.info("Response CommandStatus object: {}",
+						ReflectionToStringBuilder.toString(response.getCommandStatus()));
+				logger.info("Response AccountBalance object: {}",
+						ReflectionToStringBuilder.toString(response.getAccountBalance()));
+
+				os.close();
+				socket.close();
+
+				view.getLblPoints().setText(Integer.toString(response.getAccountBalance().getPointBalance()));
+				view.getLblCash().setText(Float.toString(response.getAccountBalance().getCashBalance()));
+				view.getLblBonus().setText(Float.toString(response.getAccountBalance().getCashBonusBalance()));
+			}
 
 		} catch (Exception ex) {
-			logger.error("Error", ex);
+			view.getDialog().setVisible(true);
+			logger.error("Error [{}]", ex.getMessage());
+		} finally {
+			cleanManager.start();
+			logger.debug("Starting CleanManager ...");
 		}
 	}
 
