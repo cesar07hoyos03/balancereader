@@ -12,7 +12,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import co.com.starpark.balancereader.view.View;
+import co.com.starpark.balancereader.view.BalanceReader;
 
 public class Launcher {
 
@@ -52,8 +52,9 @@ public class Launcher {
 							break;
 						}
 					}
-					View window = new View();
-					window.getFrmBalancereader().setVisible(true);
+					// View window = new View();
+					BalanceReader window = new BalanceReader();
+					window.setVisible(true);
 				} catch (Exception e) {
 					logger.error("Error loading window ", e);
 				}

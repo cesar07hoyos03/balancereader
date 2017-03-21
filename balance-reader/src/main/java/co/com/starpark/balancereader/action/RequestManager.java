@@ -15,7 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import co.com.starpark.balancereader.main.Launcher;
-import co.com.starpark.balancereader.view.View;
+import co.com.starpark.balancereader.view.BalanceReader;
 import co.com.starpark.balancereader.xmlparser.XMLBalanceRequest;
 import co.com.starpark.balancereader.xmlparser.XMLBalanceRequest.BalanceInquiry;
 import co.com.starpark.balancereader.xmlparser.XMLBalanceRequest.TransactionRequest;
@@ -24,13 +24,13 @@ import co.com.starpark.balancereader.xmlparser.XMLBalanceResponse;
 
 public class RequestManager implements Runnable {
 
-	private View view;
+	private BalanceReader view;
 
 	private int accountNumber;
 
-	private static final Logger logger = LogManager.getLogger(View.class.getName());
+	private static final Logger logger = LogManager.getLogger(RequestManager.class.getName());
 
-	public RequestManager(View view, int accountNumber) {
+	public RequestManager(BalanceReader view, int accountNumber) {
 		this.view = view;
 		this.accountNumber = accountNumber;
 
@@ -39,20 +39,19 @@ public class RequestManager implements Runnable {
 	@Override
 	public void run() {
 		try {
-			boolean testMode = Boolean
-					.valueOf(Launcher.config.getProperty("balancereader.Launcher.config.testmoce", "true"));
+			boolean testMode = Boolean.valueOf(Launcher.config.getProperty("balancereader.config.testmode"));
+
+			logger.debug("TestMode: [{}]", testMode);
 
 			XMLBalanceRequest request = new XMLBalanceRequest();
 			TransactionRequest txReq = new TransactionRequest();
-			txReq.setEmployeeID(Launcher.config.getProperty("balancereader.Launcher.config.employee.id", "1"));
+			txReq.setEmployeeID(Launcher.config.getProperty("balancereader.config.employee.id"));
 			EmployeeName name = new EmployeeName();
-			name.setFirstName(
-					Launcher.config.getProperty("balancereader.Launcher.config.employee.firstname", "StarPark"));
-			name.setLastName(Launcher.config.getProperty("balancereader.Launcher.config.employee.lastname", "Test"));
+			name.setFirstName(Launcher.config.getProperty("balancereader.config.employee.firstname"));
+			name.setLastName(Launcher.config.getProperty("balancereader.config.employee.lastname"));
 			txReq.setEmployeeName(name);
 			txReq.setLTDateTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
-			txReq.setMacAddress(
-					Launcher.config.getProperty("balancereader.Launcher.config.macaddress", "STARPARK0000"));
+			txReq.setMacAddress(Launcher.config.getProperty("balancereader.config.macaddress"));
 			txReq.setRequestType("BalanceInquiry");
 			txReq.setSessionID(UUID.randomUUID().toString());
 			txReq.setTransactionID(UUID.randomUUID().toString());
@@ -68,11 +67,8 @@ public class RequestManager implements Runnable {
 			Marshaller jaxbMarshaller = jaxbContextRequest.createMarshaller();
 
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			Socket socket = new Socket(
-					Launcher.config.getProperty("balancereader.Launcher.config.transaction.server",
-							"development.intercardinc.com"),
-					Integer.parseInt(
-							Launcher.config.getProperty("balancereader.Launcher.config.transaction.port", "3044")));
+			Socket socket = new Socket(Launcher.config.getProperty("balancereader.config.transaction.server"),
+					Integer.parseInt(Launcher.config.getProperty("balancereader.config.transaction.port")));
 
 			OutputStream os = socket.getOutputStream();
 			jaxbMarshaller.marshal(request, os);
@@ -87,11 +83,9 @@ public class RequestManager implements Runnable {
 			os.close();
 			socket.close();
 
-			view.getLblPointsValue().setText(Integer.toString(response.getAccountBalance().getPointBalance()));
-			view.getLblCashValue().setText(Float.toString(response.getAccountBalance().getCashBalance()));
-			view.getLblCashBonusValue().setText(Float.toString(response.getAccountBalance().getCashBonusBalance()));
-			view.getLblTokenBonusValue().setText(Integer.toString(response.getAccountBalance().getTokenBonusBalance()));
-			view.getLblTokenValue().setText(Integer.toString(response.getAccountBalance().getTokenBalance()));
+			view.getLblPoints().setText(Integer.toString(response.getAccountBalance().getPointBalance()));
+			view.getLblCash().setText(Float.toString(response.getAccountBalance().getCashBalance()));
+			view.getLblBonus().setText(Float.toString(response.getAccountBalance().getCashBonusBalance()));
 
 			Thread cleanManager = new Thread(new CleanManager(view));
 			cleanManager.start();
